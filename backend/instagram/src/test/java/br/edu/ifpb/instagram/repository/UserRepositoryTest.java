@@ -1,5 +1,8 @@
 package br.edu.ifpb.instagram.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.edu.ifpb.instagram.model.entity.UserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,7 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class UserRepositoryTest {
@@ -132,5 +135,27 @@ public class UserRepositoryTest {
 
         assertEquals(savedUser.getUsername(), updatedUser.get().getUsername());
         assertEquals(savedUser.getEncryptedPassword(), updatedUser.get().getEncryptedPassword());
+    }
+
+    @Test
+    void testCreateUser() {
+        // Criando um novo usuario
+        UserEntity user = new UserEntity();
+        user.setFullName("Usuario Teste");
+        user.setEmail("teste@teste.com");
+        user.setUsername("testeUser");
+        user.setEncryptedPassword("senhaTeste");
+
+        // Salvando no banco de dados
+        UserEntity savedUser = userRepository.save(user);
+
+        // Verificando se o usuario foi salvo corretamente
+        assertThat(savedUser).isNotNull();
+        assertThat(savedUser.getId()).isNotNull();
+
+        // Buscando usuario salvo
+        Optional<UserEntity> foundUser = userRepository.findById(savedUser.getId());
+        assertThat(foundUser).isPresent();
+        assertThat(foundUser.get().getUsername()).isEqualTo("testeUser");
     }
 }
