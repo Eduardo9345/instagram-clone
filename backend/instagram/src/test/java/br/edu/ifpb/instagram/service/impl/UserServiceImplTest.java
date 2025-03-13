@@ -96,6 +96,7 @@ public class UserServiceImplTest {
             new UserDto(null, "Paulo Pereira", "paulo123", "paulo@ppereira.dev", "teste", null)
 
         );
+        
         assertNotNull(userDto);
         assertEquals(mockUserEntity.getId(), userDto.id());
         assertEquals(mockUserEntity.getFullName(), userDto.fullName());
